@@ -28,12 +28,20 @@ router.get('/:id', (req, res, next) => {
 });
 
 // POST create an encouragement
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
+  const user = req.user;
+
+  if (!user) {
+    res.status(403).send();
+    return;
+  }
+  //create the post with the user id
   Encouragement.create({
     title: req.body.title,
     scripture: req.body.scripture,
     encouragement: req.body.encouragement,
     prayer: req.body.prayer,
+    UserId: user.id,
   })
     .then((newEncouragement) => {
       res.json(newEncouragement);
@@ -50,6 +58,13 @@ router.put('/:id', (req, res, next) => {
 
   if (!encourageId || encourageId <= 0) {
     res.status(400).send('Invalid ID 😪');
+    return;
+  }
+
+  const user = req.user;
+
+  if (!user) {
+    res.status(403).send();
     return;
   }
 
@@ -81,6 +96,13 @@ router.delete('/:id', (req, res, next) => {
 
   if (!encourageId || encourageId <= 0) {
     res.status(400).send('Invalid ID 😪');
+    return;
+  }
+
+  const user = req.user;
+
+  if (!user) {
+    res.status(403).send();
     return;
   }
 
